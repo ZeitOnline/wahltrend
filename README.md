@@ -20,7 +20,7 @@ A poll which was published on the current day gets max. weight. The weight decre
 The newest poll of each source gets maximum weight, the second-newest half weight, etc. This is done to prevent very active pollster from dominating our average.
 
 ### Past performance
-For each source, we calculate a rating based on past performance of its polls. Performance is measured as mean difference between poll and election result, in pct points. Considered are all polls since 1990 in federal and state elections, with a bigger weight on federal and more recent elections.
+For each source, we calculate a rating based on past performance of its polls. Performance is measured as mean difference between poll and election result, in pct points. Considered are all polls since 1990 in federal and state elections which apperead within 30 days before election day. Polls for federal elections get a bigger weight for the rating, as do polls in more recent years.
 
 An overview of all pollsters included in our average and their weight:
 |**Pollster**|**Historical Mean Error**|**Weight**|
