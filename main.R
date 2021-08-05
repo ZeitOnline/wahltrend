@@ -1,12 +1,4 @@
-library(dplyr)
-library(readr)
-library(stringr)
-library(tidyr)
-library(rvest)
-library(lubridate)
-library(xml2)
-library(numform)
-library(purrr)
+needs(dplyr, readr, stringr, tidyr, rvest, lubridate, xml2, numform, purrr)
 
 # Scrape Polling data from Wahlrecht.de
 # returns a single dataframe: df_polls
