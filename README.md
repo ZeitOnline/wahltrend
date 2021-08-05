@@ -1,4 +1,4 @@
-# wahltrend
+# ZEIT-ONLINE-Wahltrend
 
 **Polling average for Bundestagswahl 2021**
 
