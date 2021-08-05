@@ -1,5 +1,4 @@
-
-Copyright (c) 2012, ZEIT ONLINE GmbH
+Copyright (c) 2021, ZEIT ONLINE GmbH
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
