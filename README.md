@@ -40,4 +40,4 @@ An overview of all pollsters included in our average and their weight:
 
 Questions? Comments? [christian [punkt] endt [at] zeit.de](mailto:christian.endt@zeit.de) | [@c_endt](https://twitter.com/c_endt)
 
-(c) 2021 ZEIT ONLINE GmbH. All rights reserved. [See licence](LICENSE.md)
+(c) 2021 ZEIT ONLINE GmbH. All rights reserved. [See license](LICENSE.md)
