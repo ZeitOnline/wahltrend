@@ -34,7 +34,7 @@ An overview of all pollsters included in our average and their weight:
 |INSA|1.99|0.77|
 |YouGov|2.21|0.7|
 
-[See our current Wahltrend visualised on ZEIT ONLINE](https://zeit.de/2021-08/sonntagsfrage-bundestagswahl-2021-bundeskanzler-koalition-umfragen)
+[See our current Wahltrend visualised on ZEIT ONLINE](https://www.zeit.de/politik/deutschland/2021-08/sonntagsfrage-bundestagswahl-2021-bundeskanzler-koalition-umfragen)
 
 [Read more on our Pollster ratings (in German)](https://www.zeit.de/politik/deutschland/2021-06/wahlumfragen-sachsen-anhalt-landtagswahl-wahlverhalten-waehler)
 
