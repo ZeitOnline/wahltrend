@@ -1,57 +1,85 @@
-needs(dplyr, readr, stringr, tidyr, rvest, lubridate, xml2, numform, purrr)
+needs(dplyr, readr, stringr, tidyr, rvest, lubridate, xml2, numform, purrr, jsonlite)
 
-# Scrape Polling data from Wahlrecht.de
-# returns a single dataframe: df_polls
-source('get_polls.R')
+# Our code to collect and clean recent polling data is not shared to the public.
+# To make our calculations reproducable, we provide a dump of polls up to February 20th, 2024.
+'data/polls.csv' %>% read_csv() -> df_polls
 
-df_trend <-
-  tibble(Date = date(), Party = character(), Pct = numeric())
+# Load pollster ratings based on earlier performance
+'data/pollster_rating.csv' %>% read_csv() %>% 
+  mutate(wPollster = (min(Mean_Error) / Mean_Error) %>% round(4)) ->
+  df_ratings
 
-# calculate Wahltrend values for each day of the year 
-# Polls are weighted according to three factors:
-# wAge - age of Poll in days (from date of publication)
-# wSeq - number of polls by same source in the meantime (the newest poll of each source gets max. weight)
-# wPollster - past performance of polls by that source
-# past performance is measured as mean difference between poll and election result, in pct points
-# considered are all polls since 1990 in federal and state elections, with a bigger weight on federal and more recent elections.
-for (rolldate in c(ymd('2021-01-01'):Sys.Date())){
-  rolldate <-
-    rolldate %>% as_date()
-  rollavg <-
-    df_polls %>% 
-    mutate(Age = (rolldate - Date) %>% as.numeric()) %>% 
-    filter(
-      Age >= 0#,
-      #Age < 29
-    ) %>% 
-    left_join(('data/pollster_rating.csv' %>% read_csv())) %>% 
-    mutate(
-      wAge = (1 / (exp((Age-14)/3.5)+1)) %>% round(4),
-      wPollster = (min(Mean_Error) / Mean_Error) %>% round(4)
-    ) %>% 
-    group_by(Pollster,Party) %>% 
-    arrange(desc(Date)) %>% 
-    mutate(
-      pollRank = rank(desc(Date)),
-      wSeq = (2**(1 - pollRank)) %>% round(3)
-    ) %>% 
-    ungroup() %>% 
-    filter(wSeq > 0) %>% 
-    mutate(Weight = wAge * wPollster * wSeq) %>% 
-    group_by(Party) %>% 
-    mutate(
-      Total_Weights = Weight %>% sum(),
-      Avg_Pct = (sum(Pct * Weight) / Total_Weights) %>% round(2)
-    ) %>% 
-    ungroup() %>% 
-    select(Party,'Pct' = Avg_Pct) %>% 
-    unique() %>% 
-    mutate(Date = rolldate) %>% 
-    select(Date, everything())
-  
+'data/output/pollster_rating.csv' %>% read_csv() %>% 
+  mutate(wPollster = (min(Mean_Error) / Mean_Error) %>% round(4)) ->
+  df_ratings
+
+fit_trend <- function(state = 'BT', start = ymd('2021-09-26')){
+  # parameters are different for federal and state level,
+  # to account for the large difference in number of available polls.
+  # federal level: time-dependent weight falls to 50% after two weeks.
+  # state level: time-dependent weight falls to 50% after three months.
+  if (state == 'BT'){
+    14 -> a
+    3.5 -> b
+  } else {
+    90 -> a
+    13 -> b
+  }
   df_trend <-
-    df_trend %>%
-    rbind(rollavg)
+    tibble(
+      Date = date(),
+      Party = character(),
+      Pct = numeric()
+    )
+  
+  df_fit <-
+    df_polls %>% 
+    filter(Parliament_ID == state) %>% 
+    pivot_longer(names_to = 'Party', values_to = 'Pct', cols = c(5:ncol(.))) %>% 
+    select(Poll_ID, Pollster, Date, Party, Pct)
+  
+  for (rolldate in c(ymd(start):Sys.Date())){
+    rolldate <-
+      rolldate %>% as_date()
+    rollavg <-
+      df_fit %>% 
+      mutate(Age = (rolldate - Date) %>% as.numeric()) %>% 
+      filter(
+        Age >= 0
+      ) %>% 
+      left_join(df_ratings, by = 'Pollster') %>% # pollster-dependent wage
+      mutate(
+        wAge = (1 / (exp((Age-a)/b)+1)) %>% round(6) # time-dependent wage
+      ) %>% 
+      group_by(Pollster,Party) %>% 
+      arrange(desc(Date)) %>% 
+      mutate(
+        rank = rank(desc(Date)),
+        wSeq = (2**(1 - rank)) %>% round(3) # if several polls by the same pollster exist, only the most recent one gets full weight
+      ) %>% 
+      ungroup() %>% 
+      filter(wSeq > 0) %>% 
+      mutate(
+        wPollster = ifelse(is.na(wPollster), 0.5, wPollster), # if no pollster weight available, set to a low value of 0.5
+        Weight = wAge * wPollster * wSeq) %>% 
+      select(Poll_ID, Pollster, Date, Party, Pct, Weight) %>% 
+      group_by(Party) %>% 
+      mutate(
+        Total_Weights = Weight %>% sum(),
+        Avg_Pct = (sum(Pct * Weight) / Total_Weights) %>% round(2)
+      ) %>% 
+      ungroup() %>% 
+      select(Party,'Pct' = Avg_Pct) %>% 
+      unique() %>% 
+      mutate(Date = rolldate)
+    
+    df_trend <-
+      df_trend %>%
+      rbind(rollavg) %>% 
+      as_tibble()
+  }
+  df_trend %>% return()
 }
 
-rm(rollavg, rolldate)
+fit_trend('BT') -> trend_bund
+fit_trend('SN') -> trend_sax
