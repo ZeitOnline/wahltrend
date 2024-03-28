@@ -4,7 +4,7 @@
 
 This project calculates weighted averages of political opinion polls from Germany, which measure voting intentions for the eletions of federal and state parliaments.
 
-Polling data is optained from [Wahlrecht.de](https://www.wahlrecht.de/umfragen/index.htm).
+Polling data is obtained from [Wahlrecht.de](https://www.wahlrecht.de/umfragen/index.htm).
 
 Our 'Wahltrend' is calculated as a rolling, weighted average of all available polls about the respective election.
 
