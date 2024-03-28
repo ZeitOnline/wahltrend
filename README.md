@@ -34,7 +34,7 @@ An overview of all pollsters included in our average and their weight:
 |YouGov|1.99|0.52|
 |INSA|2.03|0.51|
 
-[See our current Wahltrend visualised on ZEIT ONLINE](https://www.zeit.de/politik/deutschland/umfragewerte-spd-cdu-gruene-fdp-afd-landtagswahlen)
+[See our current Wahltrend visualised on ZEIT ONLINE](https://www.zeit.de/politik/deutschland/wahlumfragen-landtagswahlen-bundestagswahl-spd-cdu-gruene-fdp-afd)
 
 [Read more on our Pollster ratings (in German)](https://www.zeit.de/politik/deutschland/2021-06/wahlumfragen-sachsen-anhalt-landtagswahl-wahlverhalten-waehler)
 
