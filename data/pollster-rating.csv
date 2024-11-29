@@ -1,0 +1,9 @@
+Pollster_ID,Pollster,Error,Bias,Rating,Stars
+6,Forschungsgruppe Wahlen,1.83,0.58,0.94,5
+1,Infratest dimap,2.06,0.55,0.91,5
+4,GMS,1.81,0.67,0.89,4
+3,Verian,2.1,0.72,0.79,4
+9,Allensbach,1.7,1.02,0.77,4
+2,Forsa,2.15,0.91,0.7,3
+13,YouGov,2.28,0.96,0.66,3
+5,INSA,2.28,1.25,0.59,2
